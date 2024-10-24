@@ -89,13 +89,14 @@ function provisioning_start() {
     fi
     source /opt/ai-dock/etc/environment.sh
     source /opt/ai-dock/bin/venv-set.sh comfyui
-
+    git config --local core.excludesfile ~/.config/git/ignore
+    git config --local core.excludesfile ~/.config/git/attributes
     provisioning_print_header
     provisioning_get_apt_packages
     provisioning_get_nodes
     provisioning_get_pip_packages
-    git config --local core.excludesfile ~/.config/git/ignore
-    git config --local core.excludesfile ~/.config/git/attributes
+
+    
     provisioning_get_models \
         "${WORKSPACE}/storage/stable_diffusion/models/ckpt" \
         "${CHECKPOINT_MODELS[@]}"
@@ -243,3 +244,8 @@ function provisioning_download() {
 }
 
 provisioning_start
+git lfs install;
+git clone https://Sidd065:$HF_TOKEN@huggingface.co/squareyards/Diffusion_Models;
+mkdir -p /workspace/ComfyUI/models;
+mv Diffusion_Models/* /workspace/ComfyUI/models/;
+rm -r -f Diffusion_Models;
