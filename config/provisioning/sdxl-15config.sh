@@ -96,10 +96,6 @@ function provisioning_start() {
     provisioning_get_pip_packages
     git config --local core.excludesfile ~/.config/git/ignore
     git config --local core.excludesfile ~/.config/git/attributes
-    git lfs install
-    git clone https://Sidd065:$HF_TOKEN@huggingface.co/squareyards/Diffusion_Models
-    mkdir -p /workflow/ComfyUI/models
-    mv Diffusion_Models/* /workflow/ComfyUI/models/
     provisioning_get_models \
         "${WORKSPACE}/storage/stable_diffusion/models/ckpt" \
         "${CHECKPOINT_MODELS[@]}"
@@ -151,14 +147,14 @@ function provisioning_get_nodes() {
                 printf "Updating node: %s...\n" "${repo}"
                 ( cd "$path" && git pull )
                 if [[ -e $requirements ]]; then
-                   pip_install -r --no-cache-dir "$requirements"
+                   pip_install -r "$requirements"
                 fi
             fi
         else
             printf "Downloading node: %s...\n" "${repo}"
             git clone "${repo}" "${path}" --recursive
             if [[ -e $requirements ]]; then
-                pip_install -r --no-cache-dir "${requirements}"
+                pip_install -r "${requirements}"
             fi
         fi
     done
