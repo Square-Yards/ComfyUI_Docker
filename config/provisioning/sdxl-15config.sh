@@ -95,8 +95,8 @@ function provisioning_start() {
     provisioning_get_nodes
     provisioning_get_pip_packages
     git clone https://Sidd065:$HF_TOKEN@huggingface.co/squareyards/Diffusion_Models
-    mkdir -p /opt/ComfyUI/models
-    mv Diffusion_Models/* /opt/ComfyUI/models/
+    mkdir -p /workflow/ComfyUI/models
+    mv Diffusion_Models/* /workflow/ComfyUI/models/
     provisioning_get_models \
         "${WORKSPACE}/storage/stable_diffusion/models/ckpt" \
         "${CHECKPOINT_MODELS[@]}"
