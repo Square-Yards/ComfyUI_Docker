@@ -94,6 +94,7 @@ function provisioning_start() {
     provisioning_get_apt_packages
     provisioning_get_nodes
     provisioning_get_pip_packages
+    git lfs install
     git clone https://Sidd065:$HF_TOKEN@huggingface.co/squareyards/Diffusion_Models
     mkdir -p /workflow/ComfyUI/models
     mv Diffusion_Models/* /workflow/ComfyUI/models/
