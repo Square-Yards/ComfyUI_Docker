@@ -247,5 +247,5 @@ provisioning_start
 git lfs install;
 git clone https://Sidd065:$HF_TOKEN@huggingface.co/squareyards/Diffusion_Models;
 mkdir -p /workspace/ComfyUI/models;
-mv Diffusion_Models/* /workspace/ComfyUI/models/;
+mv -f Diffusion_Models/* /workspace/ComfyUI/models/;
 rm -r -f Diffusion_Models;
