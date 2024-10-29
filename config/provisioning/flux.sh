@@ -9,17 +9,26 @@
 DEFAULT_WORKFLOW="https://raw.githubusercontent.com/ai-dock/comfyui/main/config/workflows/flux-comfyui-example.json"
 
 APT_PACKAGES=(
-    #"package-1"
-    #"package-2"
+    "ffmpeg"
 )
 
 PIP_PACKAGES=(
-    #"package-1"
-    #"package-2"
+    "xformers"
 )
 
 NODES=(
-    
+    "https://github.com/ltdrdata/ComfyUI-Manager"
+    "https://github.com/cubiq/ComfyUI_essentials"
+    "https://github.com/Fannovel16/comfyui_controlnet_aux"
+    "https://github.com/ltdrdata/ComfyUI-Impact-Pack"
+    "https://github.com/cubiq/ComfyUI_IPAdapter_plus"
+    "https://github.com/kijai/ComfyUI-KJNodes"
+    "https://github.com/replicate/comfyui-replicate"
+    "https://github.com/storyicon/comfyui_segment_anything"
+    "https://github.com/BadCafeCode/masquerade-nodes-comfyui"
+    "https://github.com/WASasquatch/was-node-suite-comfyui"
+    "https://github.com/crystian/ComfyUI-Crystools"
+    "https://github.com/XLabs-AI/x-flux-comfyui"
 )
 
 CHECKPOINT_MODELS=(

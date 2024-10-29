@@ -29,6 +29,7 @@ NODES=(
     "https://github.com/storyicon/comfyui_segment_anything"
     "https://github.com/BadCafeCode/masquerade-nodes-comfyui"
     "https://github.com/WASasquatch/was-node-suite-comfyui"
+    "https://github.com/crystian/ComfyUI-Crystools"
 )
 
 CHECKPOINT_MODELS=(
@@ -59,6 +60,7 @@ ESRGAN_MODELS=(
 )
 
 CONTROLNET_MODELS=(
+    "https://huggingface.co/abovzv/sdxl_segmentation_controlnet_ade20k/resolve/main/sdxl_segmentation_ade20k_controlnet.safetensors"
     # "https://huggingface.co/lllyasviel/sd_control_collection/resolve/main/diffusers_xl_canny_mid.safetensors"
     # "https://huggingface.co/lllyasviel/sd_control_collection/resolve/main/diffusers_xl_depth_mid.safetensors?download"
     # "https://huggingface.co/lllyasviel/sd_control_collection/resolve/main/t2i-adapter_diffusers_xl_openpose.safetensors"
