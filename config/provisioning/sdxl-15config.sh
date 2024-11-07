@@ -246,14 +246,12 @@ function provisioning_download() {
             -H "Authorization: Bearer $auth_token" \
             --progress-bar \
             --retry 3 \
-            --continue-at - \
             "$url"
     else
         curl -L -J -O \
             -H "Content-Type: application/json" \
             --progress-bar \
             --retry 3 \
-            --continue-at - \
             "$url"
     fi
 }
