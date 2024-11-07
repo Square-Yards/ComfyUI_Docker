@@ -33,18 +33,26 @@ NODES=(
 )
 
 CHECKPOINT_MODELS=(
-    # "https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/v1-5-pruned-emaonly.ckpt"
-    # #"https://huggingface.co/stabilityai/stable-diffusion-2-1/resolve/main/v2-1_768-ema-pruned.ckpt"
-    # "https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors"
-    # "https://huggingface.co/stabilityai/stable-diffusion-xl-refiner-1.0/resolve/main/sd_xl_refiner_1.0.safetensors"
+    "https://civitai.com/api/download/models/50722?type=Model&format=PickleTensor&size=full&fp=fp32"
+    "https://civitai.com/api/download/models/50722?type=Model&format=PickleTensor&size=full&fp=fp32"
+    "https://civitai.com/api/download/models/274039?type=Model&format=SafeTensor&size=pruned&fp=fp16"
+    "https://civitai.com/api/download/models/479285?type=Model&format=SafeTensor&size=full&fp=fp16"
+    "https://civitai.com/api/download/models/782002?type=Model&format=SafeTensor&size=full&fp=fp16"
+    "https://civitai.com/api/download/models/920957?type=Model&format=SafeTensor&size=full&fp=fp16"
 )
+
 
 UNET_MODELS=(
 
 )
 
 LORA_MODELS=(
-    #"https://civitai.com/api/download/models/16576"
+    "https://huggingface.co/digiplay/LORA/resolve/main/more_details.safetensors"
+    "https://civitai.com/api/download/models/236130?type=Model&format=SafeTensor" #https://civitai.com/models/171159/sdxlrender
+    "https://civitai.com/api/download/models/135867?type=Model&format=SafeTensor" #https://civitai.com/models/122359/detail-tweaker-xl
+    "https://civitai.com/api/download/models/383563?type=Model&format=SafeTensor" #https://civitai.com/models/229213/extremely-detailed-no-trigger-slidersntcaixyz
+    "https://civitai.com/api/download/models/678485?type=Model" #https://civitai.com/models/251417/midjourney-mimic
+    "https://civitai.com/api/download/models/623945?type=Model&format=SafeTensor" #https://civitai.com/models/430687?modelVersionId=623945
 )
 
 VAE_MODELS=(
@@ -54,31 +62,14 @@ VAE_MODELS=(
 )
 
 ESRGAN_MODELS=(
-    # "https://huggingface.co/ai-forever/Real-ESRGAN/resolve/main/RealESRGAN_x4.pth"
+    "https://huggingface.co/ai-forever/Real-ESRGAN/resolve/main/RealESRGAN_x4.pth"
+    "https://huggingface.co/datasets/jibopabo/upscalers/resolve/main/4xNomosUniDAT_otf.pth"
+
 )
 
 CONTROLNET_MODELS=(
     "https://huggingface.co/abovzv/sdxl_segmentation_controlnet_ade20k/resolve/main/sdxl_segmentation_ade20k_controlnet.safetensors"
-    # "https://huggingface.co/lllyasviel/sd_control_collection/resolve/main/diffusers_xl_canny_mid.safetensors"
-    # "https://huggingface.co/lllyasviel/sd_control_collection/resolve/main/diffusers_xl_depth_mid.safetensors?download"
-    # "https://huggingface.co/lllyasviel/sd_control_collection/resolve/main/t2i-adapter_diffusers_xl_openpose.safetensors"
-    # "https://huggingface.co/webui/ControlNet-modules-safetensors/resolve/main/control_canny-fp16.safetensors"
-    #"https://huggingface.co/webui/ControlNet-modules-safetensors/resolve/main/control_depth-fp16.safetensors"
-    # "https://huggingface.co/kohya-ss/ControlNet-diff-modules/resolve/main/diff_control_sd15_depth_fp16.safetensors"
-    #"https://huggingface.co/webui/ControlNet-modules-safetensors/resolve/main/control_hed-fp16.safetensors"
-    #"https://huggingface.co/webui/ControlNet-modules-safetensors/resolve/main/control_mlsd-fp16.safetensors"
-    #"https://huggingface.co/webui/ControlNet-modules-safetensors/resolve/main/control_normal-fp16.safetensors"
-    # "https://huggingface.co/webui/ControlNet-modules-safetensors/resolve/main/control_openpose-fp16.safetensors"
-    #"https://huggingface.co/webui/ControlNet-modules-safetensors/resolve/main/control_scribble-fp16.safetensors"
-    #"https://huggingface.co/webui/ControlNet-modules-safetensors/resolve/main/control_seg-fp16.safetensors"
-    # "https://huggingface.co/webui/ControlNet-modules-safetensors/resolve/main/t2iadapter_canny-fp16.safetensors"
-    #"https://huggingface.co/webui/ControlNet-modules-safetensors/resolve/main/t2iadapter_color-fp16.safetensors"
-    #"https://huggingface.co/webui/ControlNet-modules-safetensors/resolve/main/t2iadapter_depth-fp16.safetensors"
-    #"https://huggingface.co/webui/ControlNet-modules-safetensors/resolve/main/t2iadapter_keypose-fp16.safetensors"
-    # "https://huggingface.co/webui/ControlNet-modules-safetensors/resolve/main/t2iadapter_openpose-fp16.safetensors"
-    #"https://huggingface.co/webui/ControlNet-modules-safetensors/resolve/main/t2iadapter_seg-fp16.safetensors"
-    #"https://huggingface.co/webui/ControlNet-modules-safetensors/resolve/main/t2iadapter_sketch-fp16.safetensors"
-    #"https://huggingface.co/webui/ControlNet-modules-safetensors/resolve/main/t2iadapter_style-fp16.safetensors"
+    "https://huggingface.co/comfyanonymous/ControlNet-v1-1_fp16_safetensors/resolve/main/control_v11f1e_sd15_tile_fp16.safetensors"
 )
 
 ### DO NOT EDIT BELOW HERE UNLESS YOU KNOW WHAT YOU ARE DOING ###
@@ -230,23 +221,47 @@ function provisioning_has_valid_civitai_token() {
 
 # Download from $1 URL to $2 file path
 function provisioning_download() {
-    if [[ -n $HF_TOKEN && $1 =~ ^https://([a-zA-Z0-9_-]+\.)?huggingface\.co(/|$|\?) ]]; then
+    local url="$1"
+    local output_dir="$2"
+    local auth_token=""
+    
+    # Check for HuggingFace URLs
+    if [[ -n $HF_TOKEN && $url =~ ^https://([a-zA-Z0-9_-]+\.)?huggingface\.co(/|$|\?) ]]; then
         auth_token="$HF_TOKEN"
-    elif 
-        [[ -n $CIVITAI_TOKEN && $1 =~ ^https://([a-zA-Z0-9_-]+\.)?civitai\.com(/|$|\?) ]]; then
+    # Check for CivitAI URLs
+    elif [[ -n $CIVITAI_TOKEN && $url =~ ^https://([a-zA-Z0-9_-]+\.)?civitai\.com(/|$|\?) ]]; then
         auth_token="$CIVITAI_TOKEN"
     fi
-    if [[ -n $auth_token ]];then
-        wget --header="Authorization: Bearer $auth_token" -qnc --content-disposition --show-progress -e dotbytes="${3:-4M}" -P "$2" "$1"
+
+    # Create output directory if it doesn't exist
+    mkdir -p "$output_dir"
+    
+    # Change to output directory
+    cd "$output_dir" || exit
+    
+    # Download with or without authentication
+    if [[ -n $auth_token ]]; then
+        curl -L -J -O \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $auth_token" \
+            --progress-bar \
+            --retry 3 \
+            --continue-at - \
+            "$url"
     else
-        wget -qnc --content-disposition --show-progress -e dotbytes="${3:-4M}" -P "$2" "$1"
+        curl -L -J -O \
+            -H "Content-Type: application/json" \
+            --progress-bar \
+            --retry 3 \
+            --continue-at - \
+            "$url"
     fi
 }
 
 provisioning_start
 git lfs install;
 git clone https://Sidd065:$HF_TOKEN@huggingface.co/squareyards/Diffusion_Models;
-rm -r -f /workspace/ComfyUI/models/*;
+# rm -r -f /workspace/ComfyUI/models/*;
 mkdir -p /workspace/ComfyUI/models;
 mv -f Diffusion_Models/* /workspace/ComfyUI/models/;
 rm -r -f Diffusion_Models;
