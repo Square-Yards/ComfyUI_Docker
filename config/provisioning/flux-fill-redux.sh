@@ -24,6 +24,9 @@ NODES=(
 "https://github.com/yolain/ComfyUI-Easy-Use"
 "https://github.com/cubiq/ComfyUI_essentials"
 "https://github.com/jags111/efficiency-nodes-comfyui"
+"https://github.com/BadCafeCode/masquerade-nodes-comfyui"
+"https://github.com/city96/ComfyUI-GGUF"
+"https://github.com/welltop-cn/ComfyUI-TeaCache"
 )
 
 CHECKPOINT_MODELS=(
