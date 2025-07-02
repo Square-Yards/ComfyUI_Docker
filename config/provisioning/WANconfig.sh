@@ -25,6 +25,8 @@ NODES=(
     "https://github.com/kijai/ComfyUI-KJNodes"
     "https://github.com/crystian/ComfyUI-Crystools"
     "https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git"
+    "https://github.com/Jonseed/ComfyUI-Detail-Daemon.git"
+    "https://github.com/Aryan185/ComfyUI-ExternalAPI-Helpers.git"
 
 )
 
