@@ -27,6 +27,7 @@ NODES=(
     "https://github.com/Jonseed/ComfyUI-Detail-Daemon.git"
     "https://github.com/Aryan185/ComfyUI-ExternalAPI-Helpers.git"
     "https://github.com/ChenDarYen/ComfyUI-NAG.git"
+    "https://github.com/ssitu/ComfyUI_UltimateSDUpscale.git"
 )
 
 CHECKPOINT_MODELS=(
