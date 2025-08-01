@@ -62,6 +62,10 @@ CLIP_MODELS=(
     "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/umt5-xxl-enc-bf16.safetensors"
 )
 
+INSIGHTFACE_MODELS=(
+    "https://huggingface.co/datasets/Gourieff/ReActor/resolve/main/models/inswapper_128.onnx"
+)
+
 ### DO NOT EDIT BELOW HERE UNLESS YOU KNOW WHAT YOU ARE DOING ###
 
 function provisioning_start() {
@@ -99,6 +103,9 @@ function provisioning_start() {
     provisioning_get_models \
         "${WORKSPACE}/storage/stable_diffusion/models/clip" \
         "${CLIP_MODELS[@]}"
+    provisioning_get_models \
+        "${WORKSPACE}/storage/stable_diffusion/models/insightface" \
+        "${INSIGHTFACE_MODELS[@]}"
     provisioning_print_end
 }
 
@@ -156,9 +163,12 @@ function provisioning_get_models() {
     printf "Downloading %s model(s) to %s...\n" "${#arr[@]}" "$dir"
     for url in "${arr[@]}"; do
         printf "Downloading: %s\n" "${url}"
-        provisioning_download "${url}" "${dir}"
+        provisioning_download "${url}" "${dir}" &
         printf "\n"
     done
+
+    wait
+
 }
 
 function provisioning_print_header() {
