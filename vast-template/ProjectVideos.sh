@@ -125,7 +125,9 @@ function provisioning_install_pipeline() {
     ./venv/bin/huggingface-cli download ByteDance/LatentSync-1.6 whisper/tiny.pt --local-dir checkpoints
     ./venv/bin/huggingface-cli download ByteDance/LatentSync-1.6 latentsync_unet.pt --local-dir checkpoints
 
-    echo -e "GEMINI_API_KEY=${GEMINI_API_KEY}\nXI_LAB=${XI_LAB}" > .env
+    echo -e "GOOGLE_API_KEY=${GOOGLE_API_KEY}\nXI_LAB=${XI_LAB}" > .env
+	echo -e $VAST_CONTAINERLABEL > id.txt
+    mv /root/params.json .
 }
 
 function provisioning_get_nodes() {
