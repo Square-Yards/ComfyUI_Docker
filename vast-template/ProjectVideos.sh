@@ -116,6 +116,8 @@ function provisioning_install_sageattention2() {
 function provisioning_install_pipeline() {
     sudo apt -y install libgl1
     cd /root/
+	python3 -m venv vast
+	./vast/bin/pip install vastai
     git clone https://$GITHUB_API_TOKEN@github.com/Square-Yards/ProjectVideos-LS.git
     cd ProjectVideos-LS
     python3 -m venv venv
@@ -128,6 +130,7 @@ function provisioning_install_pipeline() {
     echo -e "GOOGLE_API_KEY=${GOOGLE_API_KEY}\nXI_LAB=${XI_LAB}" > .env
 	echo -e $VAST_CONTAINERLABEL > id.txt
     mv /root/params.json .
+    ./venv/bin/python3 main.py
 }
 
 function provisioning_get_nodes() {
