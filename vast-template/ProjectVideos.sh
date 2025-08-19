@@ -1,12 +1,12 @@
 #!/bin/bash
+set -eo pipefail
 
-# Activate Vast.ai's ComfyUI virtual environment
 source /venv/main/bin/activate
 COMFYUI_DIR=${WORKSPACE}/ComfyUI
 
-
 APT_PACKAGES=(
     "ffmpeg"
+    "libgl1"
 )
 
 PIP_PACKAGES=(
@@ -69,9 +69,8 @@ INSIGHTFACE_MODELS=(
     "https://huggingface.co/datasets/Gourieff/ReActor/resolve/main/models/inswapper_128.onnx"
 )
 
-
-
 function provisioning_start() {
+    rm -f /etc/supervisor/conf.d/cron.conf
     provisioning_print_header
     provisioning_get_apt_packages
     provisioning_get_nodes
@@ -85,13 +84,16 @@ function provisioning_start() {
     provisioning_get_files "${COMFYUI_DIR}/models/upscale_models" "${ESRGAN_MODELS[@]}"
     provisioning_get_files "${COMFYUI_DIR}/models/clip" "${CLIP_MODELS[@]}"
     provisioning_get_files "${COMFYUI_DIR}/models/insightface" "${INSIGHTFACE_MODELS[@]}"
-	provisioning_install_pipeline
+    provisioning_install_pipeline
+    supervisorctl stop cron
+    supervisorctl reload
     provisioning_print_end
 }
 
 function provisioning_get_apt_packages() {
     if [[ -n $APT_PACKAGES ]]; then
-        sudo $APT_INSTALL ${APT_PACKAGES[@]}
+        sudo apt-get update
+        sudo apt-get install -y ${APT_PACKAGES[@]}
     fi
 }
 
@@ -114,28 +116,55 @@ function provisioning_install_sageattention2() {
 }
 
 function provisioning_install_pipeline() {
-    sudo apt -y install libgl1
+    printf "\nSetting up the ProjectVideos-LS pipeline...\n"
     cd /root/
-	python3 -m venv vast
-	./vast/bin/pip install vastai
-    git clone https://$GITHUB_API_TOKEN@github.com/Square-Yards/ProjectVideos-LS.git
-    cd ProjectVideos-LS
-    python3 -m venv venv
-    ./venv/bin/pip install -r requirements.txt
-
-    mkdir -p checkpoints
-    ./venv/bin/huggingface-cli download ByteDance/LatentSync-1.6 whisper/tiny.pt --local-dir checkpoints
-    ./venv/bin/huggingface-cli download ByteDance/LatentSync-1.6 latentsync_unet.pt --local-dir checkpoints
+    if [ ! -d "ProjectVideos-LS" ]; then
+        python3 -m venv vast
+        ./vast/bin/pip install vastai
+        git clone https://$GITHUB_API_TOKEN@github.com/Square-Yards/ProjectVideos-LS.git
+        cd ProjectVideos-LS
+        python3 -m venv venv
+        ./venv/bin/pip install -r requirements.txt
+        mkdir -p checkpoints
+        ./venv/bin/huggingface-cli download ByteDance/LatentSync-1.6 whisper/tiny.pt --local-dir checkpoints
+        ./venv/bin/huggingface-cli download ByteDance/LatentSync-1.6 latentsync_unet.pt --local-dir checkpoints
+    else
+        cd ProjectVideos-LS
+    fi
 
     echo -e "GOOGLE_API_KEY=${GOOGLE_API_KEY}\nXI_LAB=${XI_LAB}" > .env
-	echo -e $VAST_CONTAINERLABEL > id.txt
+    echo -e $VAST_CONTAINERLABEL > id.txt
     mv /root/params.json .
-    ./venv/bin/python3 main.py
+    
+    provisioning_create_supervisor_service
+}
+
+function provisioning_create_supervisor_service() {
+    echo '#!/bin/bash
+while ! curl -s --fail http://127.0.0.1:8188/system_stats > /dev/null; do
+    echo "Waiting for ComfyUI service to start..."
+    sleep 5
+done
+echo "ComfyUI is running. Starting ProjectVideos-LS pipeline..."
+cd /root/ProjectVideos-LS
+./venv/bin/python3 main.py
+' > /opt/supervisor-scripts/projectvideos.sh
+
+    chmod +x /opt/supervisor-scripts/projectvideos.sh
+
+    printf "Creating Supervisor configuration file...\n"
+    echo '[program:projectvideos]
+command=/opt/supervisor-scripts/projectvideos.sh
+autostart=true
+autorestart=true
+stdout_logfile=/var/log/portal/projectvideos.log
+stderr_logfile=/var/log/portal/projectvideos.err.log
+' > /etc/supervisor/conf.d/projectvideos.conf
 }
 
 function provisioning_get_nodes() {
     for repo in "${NODES[@]}"; do
-        dir="${repo##*/}"
+        dir=$(basename "${repo}" .git)
         path="${COMFYUI_DIR}/custom_nodes/${dir}"
         requirements="${path}/requirements.txt"
         if [[ -d $path ]]; then
@@ -166,7 +195,6 @@ function provisioning_get_files() {
     for url in "${arr[@]}"; do
         printf "Downloading: %s\n" "${url}"
         provisioning_download "${url}" "${dir}"
-        printf "\n"
     done
 }
 
@@ -175,38 +203,29 @@ function provisioning_print_header() {
 }
 
 function provisioning_print_end() {
-    printf "\nProvisioning complete:  Application will start now\n\n"
+    printf "\nProvisioning complete: Main applications are now starting via Supervisor.\n\n"
 }
 
-
-# AI-Dock style download with skip-if-exists
 function provisioning_download() {
     local url="$1"
     local output_dir="$2"
     local auth_token=""
     
-    # Check for HuggingFace URLs
     if [[ -n $HF_TOKEN && $url =~ ^https://([a-zA-Z0-9_-]+\.)?huggingface\.co(/|$|\?) ]]; then
         auth_token="$HF_TOKEN"
-    # Check for CivitAI URLs
     elif [[ -n $CIVITAI_TOKEN && $url =~ ^https://([a-zA-Z0-9_-]+\.)?civitai\.com(/|$|\?) ]]; then
         auth_token="$CIVITAI_TOKEN"
     fi
 
-    # Create output directory if it doesn't exist
     mkdir -p "$output_dir"
-    
-    # Change to output directory
     cd "$output_dir" || exit
 
-    # Skip if file already exists
     local filename=$(basename "$url")
     if [[ -f "$filename" ]]; then
         echo "File already exists, skipping: $filename"
         return
     fi
 
-    # Download with or without authentication
     if [[ -n $auth_token ]]; then
         curl -L -J -O \
             -H "Content-Type: application/json" \
@@ -223,7 +242,6 @@ function provisioning_download() {
     fi
 }
 
-# Start provisioning unless disabled
 if [[ ! -f /.noprovisioning ]]; then
     provisioning_start
 fi
