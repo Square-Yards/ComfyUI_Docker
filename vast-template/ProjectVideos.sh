@@ -6,7 +6,7 @@ COMFYUI_DIR=${WORKSPACE}/ComfyUI
 
 APT_PACKAGES=(
     "ffmpeg"
-    "libgl1"
+	"libgl1"
 )
 
 PIP_PACKAGES=(
@@ -73,6 +73,7 @@ function provisioning_start() {
     rm -f /etc/supervisor/conf.d/cron.conf
     provisioning_print_header
     provisioning_get_apt_packages
+    provisioning_update_comfyui
     provisioning_get_nodes
     provisioning_get_pip_packages
     provisioning_install_sageattention2
@@ -84,8 +85,7 @@ function provisioning_start() {
     provisioning_get_files "${COMFYUI_DIR}/models/upscale_models" "${ESRGAN_MODELS[@]}"
     provisioning_get_files "${COMFYUI_DIR}/models/clip" "${CLIP_MODELS[@]}"
     provisioning_get_files "${COMFYUI_DIR}/models/insightface" "${INSIGHTFACE_MODELS[@]}"
-    provisioning_install_pipeline
-    supervisorctl stop cron
+	provisioning_install_pipeline
     supervisorctl reload
     provisioning_print_end
 }
@@ -103,6 +103,26 @@ function provisioning_get_pip_packages() {
     fi
 }
 
+function provisioning_update_comfyui() {
+    local target_version="${COMFYUI_VERSION:-latest}"
+
+    printf "\nUpdating ComfyUI...\n"
+    cd "${COMFYUI_DIR}" || return
+
+    if [[ "${target_version,,}" == "latest" ]]; then
+        printf "Updating to the latest version.\n"
+        git checkout master
+        git pull
+    else
+        printf "Checking out specific ComfyUI version: %s\n" "${target_version}"
+        git fetch --all --tags
+        git checkout "tags/${target_version}"
+    fi
+
+    printf "Installing/updating dependencies for this version...\n"
+    pip install --no-cache-dir -r requirements.txt
+}
+
 function provisioning_install_sageattention2() {
     local repo_dir="${WORKSPACE}/SageAttention"
     if [[ ! -d "$repo_dir" ]]; then
@@ -116,43 +136,36 @@ function provisioning_install_sageattention2() {
 }
 
 function provisioning_install_pipeline() {
-    printf "\nSetting up the ProjectVideos-LS pipeline...\n"
     cd /root/
-    if [ ! -d "ProjectVideos-LS" ]; then
-        python3 -m venv vast
-        ./vast/bin/pip install vastai
-        git clone https://$GITHUB_API_TOKEN@github.com/Square-Yards/ProjectVideos-LS.git
-        cd ProjectVideos-LS
-        python3 -m venv venv
-        ./venv/bin/pip install -r requirements.txt
-        mkdir -p checkpoints
-        ./venv/bin/huggingface-cli download ByteDance/LatentSync-1.6 whisper/tiny.pt --local-dir checkpoints
-        ./venv/bin/huggingface-cli download ByteDance/LatentSync-1.6 latentsync_unet.pt --local-dir checkpoints
-    else
-        cd ProjectVideos-LS
-    fi
-
+	python3 -m venv vast
+	./vast/bin/pip install vastai
+    git clone https://$GITHUB_API_TOKEN@github.com/Square-Yards/ProjectVideos-LS.git
+    cd ProjectVideos-LS
+    python3 -m venv venv
+    ./venv/bin/pip install -r requirements.txt
+    mkdir -p checkpoints
+    ./venv/bin/python3 -m huggingface_hub.commands.huggingface_cli download ByteDance/LatentSync-1.6 whisper/tiny.pt --local-dir checkpoints
+    ./venv/bin/python3 -m huggingface_hub.commands.huggingface_cli download ByteDance/LatentSync-1.6 latentsync_unet.pt --local-dir checkpoints
     echo -e "GOOGLE_API_KEY=${GOOGLE_API_KEY}\nXI_LAB=${XI_LAB}" > .env
-    echo -e $VAST_CONTAINERLABEL > id.txt
+	echo -e $VAST_CONTAINERLABEL > id.txt
     mv /root/params.json .
-    
+
     provisioning_create_supervisor_service
 }
 
 function provisioning_create_supervisor_service() {
     echo '#!/bin/bash
-while ! curl -s --fail http://127.0.0.1:8188/system_stats > /dev/null; do
-    echo "Waiting for ComfyUI service to start..."
+while [ -f "/.provisioning" ]; do
+    echo "Waiting for instance provisioning to complete..."
     sleep 5
 done
-echo "ComfyUI is running. Starting ProjectVideos-LS pipeline..."
+echo "Provisioning complete. Starting ProjectVideos-LS pipeline..."
 cd /root/ProjectVideos-LS
 ./venv/bin/python3 main.py
 ' > /opt/supervisor-scripts/projectvideos.sh
 
     chmod +x /opt/supervisor-scripts/projectvideos.sh
 
-    printf "Creating Supervisor configuration file...\n"
     echo '[program:projectvideos]
 command=/opt/supervisor-scripts/projectvideos.sh
 autostart=true
@@ -164,7 +177,7 @@ stderr_logfile=/var/log/portal/projectvideos.err.log
 
 function provisioning_get_nodes() {
     for repo in "${NODES[@]}"; do
-        dir=$(basename "${repo}" .git)
+        dir="${repo##*/}"
         path="${COMFYUI_DIR}/custom_nodes/${dir}"
         requirements="${path}/requirements.txt"
         if [[ -d $path ]]; then
@@ -203,7 +216,7 @@ function provisioning_print_header() {
 }
 
 function provisioning_print_end() {
-    printf "\nProvisioning complete: Main applications are now starting via Supervisor.\n\n"
+    printf "\nProvisioning complete:  Application will start now\n\n"
 }
 
 function provisioning_download() {
