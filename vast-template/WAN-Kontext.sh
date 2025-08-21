@@ -41,8 +41,6 @@ UNET_MODELS=(
 LORA_MODELS=(
     "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Lightx2v/lightx2v_I2V_14B_480p_cfg_step_distill_rank128_bf16.safetensors"
     "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/FastWan/FastWan_T2V_14B_480p_lora_rank_128_bf16.safetensors"
-    "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Wan22-Lightning/Wan2.2-Lightning_I2V-A14B-4steps-lora_HIGH_fp16.safetensors"
-    "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Wan22-Lightning/Wan2.2-Lightning_I2V-A14B-4steps-lora_LOW_fp16.safetensors"
     "https://civitai.com/api/download/models/87153?type=Model&format=SafeTensor"
     "https://civitai.com/api/download/models/236130?type=Model&format=SafeTensor"
     "https://civitai.com/api/download/models/1026423?type=Model&format=SafeTensor"
@@ -76,17 +74,9 @@ INSIGHTFACE_MODELS=(
 function provisioning_start() {
     provisioning_print_header
     provisioning_get_apt_packages
-    provisioning_get_nodes
-    provisioning_get_pip_packages
-    provisioning_install_sageattention2
-    provisioning_get_files "${COMFYUI_DIR}/models/checkpoints" "${CHECKPOINT_MODELS[@]}"
-    provisioning_get_files "${COMFYUI_DIR}/models/unet" "${UNET_MODELS[@]}"
-    provisioning_get_files "${COMFYUI_DIR}/models/loras" "${LORA_MODELS[@]}"
-    provisioning_get_files "${COMFYUI_DIR}/models/controlnet" "${CONTROLNET_MODELS[@]}"
-    provisioning_get_files "${COMFYUI_DIR}/models/vae" "${VAE_MODELS[@]}"
-    provisioning_get_files "${COMFYUI_DIR}/models/upscale_models" "${ESRGAN_MODELS[@]}"
-    provisioning_get_files "${COMFYUI_DIR}/models/clip" "${CLIP_MODELS[@]}"
-    provisioning_get_files "${COMFYUI_DIR}/models/insightface" "${INSIGHTFACE_MODELS[@]}"
+    provisioning_download_models &
+    provisioning_setup_dependencies &
+    wait
     provisioning_print_end
 }
 
@@ -100,6 +90,25 @@ function provisioning_get_pip_packages() {
     if [[ -n $PIP_PACKAGES ]]; then
         pip install --no-cache-dir ${PIP_PACKAGES[@]}
     fi
+}
+
+function provisioning_download_models() {
+	echo "--- Starting model downloads in the background ---\n"
+    provisioning_get_models "${COMFYUI_DIR}/models/checkpoints" "${CHECKPOINT_MODELS[@]}"
+    provisioning_get_models "${COMFYUI_DIR}/models/unet" "${UNET_MODELS[@]}"
+    provisioning_get_models "${COMFYUI_DIR}/models/loras" "${LORA_MODELS[@]}"
+    provisioning_get_models "${COMFYUI_DIR}/models/controlnet" "${CONTROLNET_MODELS[@]}"
+    provisioning_get_models "${COMFYUI_DIR}/models/vae" "${VAE_MODELS[@]}"
+    provisioning_get_models "${COMFYUI_DIR}/models/upscale_models" "${ESRGAN_MODELS[@]}"
+    provisioning_get_models "${COMFYUI_DIR}/models/clip" "${CLIP_MODELS[@]}"
+    provisioning_get_models "${COMFYUI_DIR}/models/insightface" "${INSIGHTFACE_MODELS[@]}"
+}
+
+
+function provisioning_setup_dependencies() {
+    provisioning_get_nodes
+    provisioning_get_pip_packages
+    provisioning_install_sageattention2
 }
 
 function provisioning_install_sageattention2() {
@@ -137,7 +146,7 @@ function provisioning_get_nodes() {
     done
 }
 
-function provisioning_get_files() {
+function provisioning_get_models() {
     if [[ -z $2 ]]; then return 1; fi
     dir="$1"
     mkdir -p "$dir"

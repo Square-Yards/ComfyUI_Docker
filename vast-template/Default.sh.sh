@@ -44,26 +44,15 @@ CLIP_MODELS=(
 
 )
 
-INSIGHTFACE_MODELS=(
-
-)
 
 function provisioning_start() {
     rm -f /etc/supervisor/conf.d/cron.conf
     provisioning_print_header
     provisioning_get_apt_packages
     provisioning_update_comfyui
-    provisioning_get_nodes
-    provisioning_get_pip_packages
-    provisioning_install_sageattention2
-    provisioning_get_files "${COMFYUI_DIR}/models/checkpoints" "${CHECKPOINT_MODELS[@]}"
-    provisioning_get_files "${COMFYUI_DIR}/models/unet" "${UNET_MODELS[@]}"
-    provisioning_get_files "${COMFYUI_DIR}/models/loras" "${LORA_MODELS[@]}"
-    provisioning_get_files "${COMFYUI_DIR}/models/controlnet" "${CONTROLNET_MODELS[@]}"
-    provisioning_get_files "${COMFYUI_DIR}/models/vae" "${VAE_MODELS[@]}"
-    provisioning_get_files "${COMFYUI_DIR}/models/upscale_models" "${ESRGAN_MODELS[@]}"
-    provisioning_get_files "${COMFYUI_DIR}/models/clip" "${CLIP_MODELS[@]}"
-    provisioning_get_files "${COMFYUI_DIR}/models/insightface" "${INSIGHTFACE_MODELS[@]}"
+    provisioning_download_models &
+    provisioning_setup_dependencies &
+    wait
     provisioning_print_end
 }
 
@@ -78,6 +67,24 @@ function provisioning_get_pip_packages() {
     if [[ -n $PIP_PACKAGES ]]; then
         pip install --no-cache-dir ${PIP_PACKAGES[@]}
     fi
+}
+
+function provisioning_download_models() {
+	echo "--- Starting model downloads in the background ---\n"
+    provisioning_get_models "${COMFYUI_DIR}/models/checkpoints" "${CHECKPOINT_MODELS[@]}"
+    provisioning_get_models "${COMFYUI_DIR}/models/unet" "${UNET_MODELS[@]}"
+    provisioning_get_models "${COMFYUI_DIR}/models/loras" "${LORA_MODELS[@]}"
+    provisioning_get_models "${COMFYUI_DIR}/models/controlnet" "${CONTROLNET_MODELS[@]}"
+    provisioning_get_models "${COMFYUI_DIR}/models/vae" "${VAE_MODELS[@]}"
+    provisioning_get_models "${COMFYUI_DIR}/models/upscale_models" "${ESRGAN_MODELS[@]}"
+    provisioning_get_models "${COMFYUI_DIR}/models/clip" "${CLIP_MODELS[@]}"
+}
+
+
+function provisioning_setup_dependencies() {
+    provisioning_get_nodes
+    provisioning_get_pip_packages
+    provisioning_install_sageattention2
 }
 
 function provisioning_update_comfyui() {
@@ -136,7 +143,7 @@ function provisioning_get_nodes() {
     done
 }
 
-function provisioning_get_files() {
+function provisioning_get_models() {
     if [[ -z $2 ]]; then return 1; fi
     dir="$1"
     mkdir -p "$dir"
