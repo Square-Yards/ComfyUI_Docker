@@ -21,20 +21,13 @@ NODES=(
     "https://github.com/ltdrdata/ComfyUI-Impact-Pack.git"
 )
 
-CHECKPOINT_MODELS=(
-
-)
-
-LORA_MODELS=(
-
-)
 
 VAE_MODELS=(
     "https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/main/ae.safetensors"
 )
 
 CONTROLNET_MODELS=(
-
+    "https://huggingface.co/Shakker-Labs/FLUX.1-dev-ControlNet-Union-Pro-2.0/resolve/main/diffusion_pytorch_model.safetensors"
 )
 
 DIFFUSION_MODELS=(
@@ -72,11 +65,10 @@ function provisioning_get_pip_packages() {
 
 function provisioning_download_models() {
 	echo "--- Starting model downloads in the background ---\n"
-    provisioning_get_models "${COMFYUI_DIR}/models/checkpoints" "${CHECKPOINT_MODELS[@]}"
-    provisioning_get_models "${COMFYUI_DIR}/models/loras" "${LORA_MODELS[@]}"
     provisioning_get_models "${COMFYUI_DIR}/models/controlnet" "${CONTROLNET_MODELS[@]}"
     provisioning_get_models "${COMFYUI_DIR}/models/vae" "${VAE_MODELS[@]}"
     provisioning_get_models "${COMFYUI_DIR}/models/clip" "${CLIP_MODELS[@]}"
+    provisioning_get_models "${COMFYUI_DIR}/models/diffusion" "${DIFFUSION_MODELS[@]}"
 }
 
 
