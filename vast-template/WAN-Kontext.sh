@@ -74,6 +74,7 @@ INSIGHTFACE_MODELS=(
 function provisioning_start() {
     provisioning_print_header
     provisioning_get_apt_packages
+    provisioning_update_comfyui
     provisioning_download_models &
     provisioning_setup_dependencies &
     wait
@@ -102,6 +103,26 @@ function provisioning_download_models() {
     provisioning_get_models "${COMFYUI_DIR}/models/upscale_models" "${ESRGAN_MODELS[@]}"
     provisioning_get_models "${COMFYUI_DIR}/models/clip" "${CLIP_MODELS[@]}"
     provisioning_get_models "${COMFYUI_DIR}/models/insightface" "${INSIGHTFACE_MODELS[@]}"
+}
+
+function provisioning_update_comfyui() {
+    local target_version="${COMFYUI_VERSION:-latest}"
+
+    printf "\nUpdating ComfyUI...\n"
+    cd "${COMFYUI_DIR}" || return
+
+    if [[ "${target_version,,}" == "latest" ]]; then
+        printf "Updating to the latest version.\n"
+        git checkout master
+        git pull
+    else
+        printf "Checking out specific ComfyUI version: %s\n" "${target_version}"
+        git fetch --all --tags
+        git checkout "tags/${target_version}"
+    fi
+
+    printf "Installing/updating dependencies for this version...\n"
+    pip install --no-cache-dir -r requirements.txt
 }
 
 

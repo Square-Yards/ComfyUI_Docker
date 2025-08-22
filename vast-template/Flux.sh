@@ -45,6 +45,7 @@ CLIP_MODELS=(
 function provisioning_start() {
     provisioning_print_header
     provisioning_get_apt_packages
+    provisioning_update_comfyui
     provisioning_download_models &
     provisioning_setup_dependencies &
     wait
@@ -76,6 +77,26 @@ function provisioning_setup_dependencies() {
     provisioning_get_nodes
     provisioning_get_pip_packages
     provisioning_install_sageattention2
+}
+
+function provisioning_update_comfyui() {
+    local target_version="${COMFYUI_VERSION:-latest}"
+
+    printf "\nUpdating ComfyUI...\n"
+    cd "${COMFYUI_DIR}" || return
+
+    if [[ "${target_version,,}" == "latest" ]]; then
+        printf "Updating to the latest version.\n"
+        git checkout master
+        git pull
+    else
+        printf "Checking out specific ComfyUI version: %s\n" "${target_version}"
+        git fetch --all --tags
+        git checkout "tags/${target_version}"
+    fi
+
+    printf "Installing/updating dependencies for this version...\n"
+    pip install --no-cache-dir -r requirements.txt
 }
 
 function provisioning_install_sageattention2() {
