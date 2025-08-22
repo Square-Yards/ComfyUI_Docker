@@ -68,7 +68,7 @@ function provisioning_download_models() {
     provisioning_get_models "${COMFYUI_DIR}/models/controlnet" "${CONTROLNET_MODELS[@]}"
     provisioning_get_models "${COMFYUI_DIR}/models/vae" "${VAE_MODELS[@]}"
     provisioning_get_models "${COMFYUI_DIR}/models/clip" "${CLIP_MODELS[@]}"
-    provisioning_get_models "${COMFYUI_DIR}/models/diffusion" "${DIFFUSION_MODELS[@]}"
+    provisioning_get_models "${COMFYUI_DIR}/models/diffusion_models" "${DIFFUSION_MODELS[@]}"
 }
 
 
