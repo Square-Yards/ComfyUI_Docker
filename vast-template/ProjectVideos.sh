@@ -25,6 +25,8 @@ NODES=(
     "https://github.com/Extraltodeus/ComfyUI-AutomaticCFG.git"
     "https://github.com/shiimizu/ComfyUI-TiledDiffusion.git"
     "https://github.com/ClownsharkBatwing/RES4LYF.git"
+	"https://github.com/cubiq/ComfyUI_FaceAnalysis.git"
+	"https://github.com/ltdrdata/was-node-suite-comfyui.git"
     "https://github.com/ltdrdata/ComfyUI-Impact-Pack.git"
 )
 
@@ -161,11 +163,11 @@ function provisioning_install_pipeline() {
     mkdir -p checkpoints
     ./venv/bin/python3 -m huggingface_hub.commands.huggingface_cli download ByteDance/LatentSync-1.6 whisper/tiny.pt --local-dir checkpoints
     ./venv/bin/python3 -m huggingface_hub.commands.huggingface_cli download ByteDance/LatentSync-1.6 latentsync_unet.pt --local-dir checkpoints
-    echo -e "GOOGLE_API_KEY=${GOOGLE_API_KEY}\nXI_LAB=${XI_LAB}" > .env
+    echo -e "GOOGLE_API_KEY=${GOOGLE_API_KEY}\nXI_LAB=${XI_LAB}\nGOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}\nGEMINI_TTS_API_KEY=${GEMINI_TTS_API_KEY}" > .env
 	echo -e $VAST_CONTAINERLABEL > id.txt
     mv /root/params.json .
 
-    provisioning_create_supervisor_service
+    # provisioning_create_supervisor_service
 }
 
 function provisioning_create_supervisor_service() {
