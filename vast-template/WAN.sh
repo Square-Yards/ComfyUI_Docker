@@ -119,6 +119,10 @@ function provisioning_setup_dependencies() {
 }
 
 function provisioning_install_sageattention2() {
+    if [[ "${INSTALL_SAGEATTENTION,,}" != "true" ]]; then
+        echo "INSTALL_SAGEATTENTION is not set to true, skipping SageAttention2 installation."
+        return
+    fi
     local repo_dir="${WORKSPACE}/SageAttention"
     if [[ ! -d "$repo_dir" ]]; then
         echo "Installing SageAttention2..."
