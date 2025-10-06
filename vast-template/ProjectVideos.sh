@@ -25,6 +25,7 @@ NODES=(
     "https://github.com/Extraltodeus/ComfyUI-AutomaticCFG.git"
     "https://github.com/shiimizu/ComfyUI-TiledDiffusion.git"
     "https://github.com/ClownsharkBatwing/RES4LYF.git"
+    "https://github.com/city96/ComfyUI-GGUF.git"
 	"https://github.com/cubiq/ComfyUI_FaceAnalysis.git"
 	"https://github.com/ltdrdata/was-node-suite-comfyui.git"
     "https://github.com/ltdrdata/ComfyUI-Impact-Pack.git"
@@ -37,6 +38,9 @@ CHECKPOINT_MODELS=(
 UNET_MODELS=(
     "https://huggingface.co/QuantStack/Wan2.2-I2V-A14B-GGUF/resolve/main/HighNoise/Wan2.2-I2V-A14B-HighNoise-Q8_0.gguf"
     "https://huggingface.co/QuantStack/Wan2.2-I2V-A14B-GGUF/resolve/main/LowNoise/Wan2.2-I2V-A14B-LowNoise-Q8_0.gguf"
+    "https://huggingface.co/QuantStack/Qwen-Image-Edit-2509-GGUF/resolve/main/Qwen-Image-Edit-2509-Q8_0.gguf"
+	"https://huggingface.co/city96/Wan2.1-I2V-14B-720P-gguf/resolve/main/wan2.1-i2v-14b-720p-Q8_0.gguf"
+	"https://huggingface.co/Kijai/WanVideo_comfy_GGUF/resolve/main/InfiniteTalk/Wan2_1-InfiniteTalk_Multi_Q8.gguf"
 )
 
 LORA_MODELS=(
@@ -60,10 +64,6 @@ CONTROLNET_MODELS=(
     "https://huggingface.co/comfyanonymous/ControlNet-v1-1_fp16_safetensors/resolve/main/control_v11f1e_sd15_tile_fp16.safetensors"
 )
 
-DIFFUSION_MODELS=(
-    "https://huggingface.co/Comfy-Org/Qwen-Image-Edit_ComfyUI/resolve/main/split_files/diffusion_models/qwen_image_edit_bf16.safetensors"
-)
-
 CLIP_MODELS=(
     "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/text_encoders/qwen_2.5_vl_7b.safetensors"
     "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/umt5-xxl-enc-bf16.safetensors"
@@ -71,6 +71,10 @@ CLIP_MODELS=(
 
 INSIGHTFACE_MODELS=(
     "https://huggingface.co/datasets/Gourieff/ReActor/resolve/main/models/inswapper_128.onnx"
+)
+
+CLIP_VISION=(
+	"https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/clip_vision/clip_vision_h.safetensors"
 )
 
 function provisioning_start() {
@@ -109,8 +113,8 @@ function provisioning_download_models() {
     provisioning_get_models "${COMFYUI_DIR}/models/vae" "${VAE_MODELS[@]}"
     provisioning_get_models "${COMFYUI_DIR}/models/upscale_models" "${ESRGAN_MODELS[@]}"
     provisioning_get_models "${COMFYUI_DIR}/models/clip" "${CLIP_MODELS[@]}"
-    provisioning_get_models "${COMFYUI_DIR}/models/diffusion_models" "${DIFFUSION_MODELS[@]}"
     provisioning_get_models "${COMFYUI_DIR}/models/insightface" "${INSIGHTFACE_MODELS[@]}"
+    provisioning_get_models "${COMFYUI_DIR}/models/clip_vision" "${CLIP_VISION[@]}"
 }
 
 
@@ -164,9 +168,6 @@ function provisioning_install_pipeline() {
     cd ProjectVideos-LS
     python3 -m venv venv
     ./venv/bin/pip install -r requirements.txt
-    mkdir -p checkpoints
-    ./venv/bin/python3 -m huggingface_hub.commands.huggingface_cli download ByteDance/LatentSync-1.6 whisper/tiny.pt --local-dir checkpoints
-    ./venv/bin/python3 -m huggingface_hub.commands.huggingface_cli download ByteDance/LatentSync-1.6 latentsync_unet.pt --local-dir checkpoints
     echo -e "GOOGLE_API_KEY=${GOOGLE_API_KEY}\nXI_LAB=${XI_LAB}\nGOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}\nGEMINI_TTS_API_KEY=${GEMINI_TTS_API_KEY}" > .env
 	echo -e $VAST_CONTAINERLABEL > id.txt
     mv /root/params.json .
