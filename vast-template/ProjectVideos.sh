@@ -167,7 +167,7 @@ function provisioning_install_pipeline() {
     cd ProjectVideos-LS
     python3 -m venv venv
     ./venv/bin/pip install -r requirements.txt
-    echo -e "GOOGLE_API_KEY=${GOOGLE_API_KEY}\nXI_LAB=${XI_LAB}\nGOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}\nGEMINI_TTS_API_KEY=${GEMINI_TTS_API_KEY}" > .env
+    echo -e "GOOGLE_API_KEY=${GOOGLE_API_KEY}\nGOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}\nGEMINI_TTS_API_KEY=${GEMINI_TTS_API_KEY}" > .env
 	echo -e $VAST_CONTAINERLABEL > id.txt
     mv /root/params.json .
 
