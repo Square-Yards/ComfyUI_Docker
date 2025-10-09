@@ -10,7 +10,7 @@ APT_PACKAGES=(
 )
 
 PIP_PACKAGES=(
-    "onnxruntime-gpu"
+    "onnxruntime"
     "matplotlib==3.10.3"
 )
 
@@ -26,7 +26,6 @@ NODES=(
     "https://github.com/shiimizu/ComfyUI-TiledDiffusion.git"
     "https://github.com/ClownsharkBatwing/RES4LYF.git"
     "https://github.com/city96/ComfyUI-GGUF.git"
-	"https://github.com/cubiq/ComfyUI_FaceAnalysis.git"
 	"https://github.com/ltdrdata/was-node-suite-comfyui.git"
     "https://github.com/ltdrdata/ComfyUI-Impact-Pack.git"
 )
@@ -36,8 +35,8 @@ CHECKPOINT_MODELS=(
 )
 
 UNET_MODELS=(
-    "https://huggingface.co/QuantStack/Wan2.2-I2V-A14B-GGUF/resolve/main/HighNoise/Wan2.2-I2V-A14B-HighNoise-Q8_0.gguf"
-    "https://huggingface.co/QuantStack/Wan2.2-I2V-A14B-GGUF/resolve/main/LowNoise/Wan2.2-I2V-A14B-LowNoise-Q8_0.gguf"
+    "https://huggingface.co/QuantStack/Wan2.2-I2V-A14B-GGUF/resolve/main/HighNoise/Wan2.2-I2V-A14B-HighNoise-Q6_K.gguf"
+    "https://huggingface.co/QuantStack/Wan2.2-I2V-A14B-GGUF/resolve/main/LowNoise/Wan2.2-I2V-A14B-LowNoise-Q6_K.gguf"
     "https://huggingface.co/QuantStack/Qwen-Image-Edit-2509-GGUF/resolve/main/Qwen-Image-Edit-2509-Q8_0.gguf"
 	"https://huggingface.co/city96/Wan2.1-I2V-14B-720P-gguf/resolve/main/wan2.1-i2v-14b-720p-Q8_0.gguf"
 	"https://huggingface.co/Kijai/WanVideo_comfy_GGUF/resolve/main/InfiniteTalk/Wan2_1-InfiniteTalk_Multi_Q8.gguf"
@@ -106,22 +105,22 @@ function provisioning_get_pip_packages() {
 
 function provisioning_download_models() {
 	echo "--- Starting model downloads in the background ---\n"
-    provisioning_get_models "${COMFYUI_DIR}/models/checkpoints" "${CHECKPOINT_MODELS[@]}"
-    provisioning_get_models "${COMFYUI_DIR}/models/unet" "${UNET_MODELS[@]}"
-    provisioning_get_models "${COMFYUI_DIR}/models/loras" "${LORA_MODELS[@]}"
-    provisioning_get_models "${COMFYUI_DIR}/models/controlnet" "${CONTROLNET_MODELS[@]}"
-    provisioning_get_models "${COMFYUI_DIR}/models/vae" "${VAE_MODELS[@]}"
-    provisioning_get_models "${COMFYUI_DIR}/models/upscale_models" "${ESRGAN_MODELS[@]}"
-    provisioning_get_models "${COMFYUI_DIR}/models/clip" "${CLIP_MODELS[@]}"
-    provisioning_get_models "${COMFYUI_DIR}/models/insightface" "${INSIGHTFACE_MODELS[@]}"
-    provisioning_get_models "${COMFYUI_DIR}/models/clip_vision" "${CLIP_VISION[@]}"
+    provisioning_get_models "${COMFYUI_DIR}/models/checkpoints" "${CHECKPOINT_MODELS[@]}" &
+    provisioning_get_models "${COMFYUI_DIR}/models/unet" "${UNET_MODELS[@]}" &
+    provisioning_get_models "${COMFYUI_DIR}/models/loras" "${LORA_MODELS[@]}" &
+    provisioning_get_models "${COMFYUI_DIR}/models/controlnet" "${CONTROLNET_MODELS[@]}" &
+    provisioning_get_models "${COMFYUI_DIR}/models/vae" "${VAE_MODELS[@]}" &
+    provisioning_get_models "${COMFYUI_DIR}/models/upscale_models" "${ESRGAN_MODELS[@]}" &
+    provisioning_get_models "${COMFYUI_DIR}/models/clip" "${CLIP_MODELS[@]}" &
+    provisioning_get_models "${COMFYUI_DIR}/models/insightface" "${INSIGHTFACE_MODELS[@]}" &
+    provisioning_get_models "${COMFYUI_DIR}/models/clip_vision" "${CLIP_VISION[@]}" &
 }
 
 
 function provisioning_setup_dependencies() {
     provisioning_get_nodes
     provisioning_get_pip_packages
-    provisioning_install_sageattention2
+    provisioning_install_sageattention3
 }
 
 function provisioning_update_comfyui() {
@@ -144,19 +143,19 @@ function provisioning_update_comfyui() {
     pip install --no-cache-dir -r requirements.txt
 }
 
-function provisioning_install_sageattention2() {
+function provisioning_install_sageattention3() {
     if [[ "${INSTALL_SAGEATTENTION,,}" != "true" ]]; then
-        echo "INSTALL_SAGEATTENTION is not set to true, skipping SageAttention2 installation."
+        echo "INSTALL_SAGEATTENTION is not set to true, skipping SageAttention3 installation."
         return
     fi
     local repo_dir="${WORKSPACE}/SageAttention"
     if [[ ! -d "$repo_dir" ]]; then
-        echo "Installing SageAttention2..."
-        git clone https://github.com/thu-ml/SageAttention.git "$repo_dir"
+        echo "Installing SageAttention3..."
+        git clone https://$HF_USER:$HF_TOKEN@huggingface.co/jt-zhang/SageAttention3 "$repo_dir"
         cd "$repo_dir" || exit 1
-        pip install .
+        python setup.py install
     else
-        echo "SageAttention2 already installed, skipping."
+        echo "SageAttention3 already installed, skipping."
     fi
 }
 
