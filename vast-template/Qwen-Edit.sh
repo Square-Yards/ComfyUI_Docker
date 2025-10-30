@@ -30,7 +30,7 @@ CHECKPOINT_MODELS=(
 )
 
 UNET_MODELS=(
-
+    "https://huggingface.co/QuantStack/Qwen-Image-Edit-2509-GGUF/resolve/main/Qwen-Image-Edit-2509-Q8_0.gguf"
 )
 
 LORA_MODELS=(
@@ -51,9 +51,6 @@ CONTROLNET_MODELS=(
     "https://huggingface.co/comfyanonymous/ControlNet-v1-1_fp16_safetensors/resolve/main/control_v11f1e_sd15_tile_fp16.safetensors"
 )
 
-DIFFUSION_MODELS=(
-    "https://huggingface.co/Comfy-Org/Qwen-Image-Edit_ComfyUI/resolve/main/split_files/diffusion_models/qwen_image_edit_bf16.safetensors"
-)
 
 CLIP_MODELS=(
     "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/text_encoders/qwen_2.5_vl_7b.safetensors"
@@ -89,21 +86,21 @@ function provisioning_get_pip_packages() {
 
 function provisioning_download_models() {
 	echo "--- Starting model downloads in the background ---\n"
-    provisioning_get_models "${COMFYUI_DIR}/models/checkpoints" "${CHECKPOINT_MODELS[@]}"
-    provisioning_get_models "${COMFYUI_DIR}/models/loras" "${LORA_MODELS[@]}"
-    provisioning_get_models "${COMFYUI_DIR}/models/controlnet" "${CONTROLNET_MODELS[@]}"
-    provisioning_get_models "${COMFYUI_DIR}/models/vae" "${VAE_MODELS[@]}"
-    provisioning_get_models "${COMFYUI_DIR}/models/upscale_models" "${ESRGAN_MODELS[@]}"
-    provisioning_get_models "${COMFYUI_DIR}/models/clip" "${CLIP_MODELS[@]}"
-    provisioning_get_models "${COMFYUI_DIR}/models/diffusion_models" "${DIFFUSION_MODELS[@]}"
-    provisioning_get_models "${COMFYUI_DIR}/models/insightface" "${INSIGHTFACE_MODELS[@]}"
+    provisioning_get_models "${COMFYUI_DIR}/models/checkpoints" "${CHECKPOINT_MODELS[@]}" &
+    provisioning_get_models "${COMFYUI_DIR}/models/loras" "${LORA_MODELS[@]}" &
+    provisioning_get_models "${COMFYUI_DIR}/models/controlnet" "${CONTROLNET_MODELS[@]}" &
+    provisioning_get_models "${COMFYUI_DIR}/models/vae" "${VAE_MODELS[@]}" &
+    provisioning_get_models "${COMFYUI_DIR}/models/upscale_models" "${ESRGAN_MODELS[@]}" &
+    provisioning_get_models "${COMFYUI_DIR}/models/clip" "${CLIP_MODELS[@]}" &
+    provisioning_get_models "${COMFYUI_DIR}/models/unet" "${UNET_MODELS[@]}" &
+    provisioning_get_models "${COMFYUI_DIR}/models/insightface" "${INSIGHTFACE_MODELS[@]}" &
 }
 
 
 function provisioning_setup_dependencies() {
     provisioning_get_nodes
     provisioning_get_pip_packages
-    provisioning_install_sageattention2
+    provisioning_install_sageattention3
 }
 
 function provisioning_update_comfyui() {
@@ -126,19 +123,19 @@ function provisioning_update_comfyui() {
     pip install --no-cache-dir -r requirements.txt
 }
 
-function provisioning_install_sageattention2() {
+function provisioning_install_sageattention3() {
     if [[ "${INSTALL_SAGEATTENTION,,}" != "true" ]]; then
-        echo "INSTALL_SAGEATTENTION is not set to true, skipping SageAttention2 installation."
+        echo "INSTALL_SAGEATTENTION is not set to true, skipping SageAttention3 installation."
         return
     fi
     local repo_dir="${WORKSPACE}/SageAttention"
     if [[ ! -d "$repo_dir" ]]; then
-        echo "Installing SageAttention2..."
-        git clone https://github.com/thu-ml/SageAttention.git "$repo_dir"
+        echo "Installing SageAttention3..."
+        git clone https://$HF_USER:$HF_TOKEN@huggingface.co/jt-zhang/SageAttention3 "$repo_dir"
         cd "$repo_dir" || exit 1
-        pip install .
+        python setup.py install
     else
-        echo "SageAttention2 already installed, skipping."
+        echo "SageAttention3 already installed, skipping."
     fi
 }
 
