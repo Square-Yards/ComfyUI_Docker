@@ -115,22 +115,22 @@ function provisioning_update_comfyui() {
 function provisioning_setup_dependencies() {
     provisioning_get_nodes
     provisioning_get_pip_packages
-    provisioning_install_sageattention2
+    provisioning_install_sageattention3
 }
 
-function provisioning_install_sageattention2() {
+function provisioning_install_sageattention3() {
     if [[ "${INSTALL_SAGEATTENTION,,}" != "true" ]]; then
-        echo "INSTALL_SAGEATTENTION is not set to true, skipping SageAttention2 installation."
+        echo "INSTALL_SAGEATTENTION is not set to true, skipping SageAttention3 installation."
         return
     fi
     local repo_dir="${WORKSPACE}/SageAttention"
     if [[ ! -d "$repo_dir" ]]; then
-        echo "Installing SageAttention2..."
-        git clone https://github.com/thu-ml/SageAttention.git "$repo_dir"
+        echo "Installing SageAttention3..."
+        git clone https://$HF_USER:$HF_TOKEN@huggingface.co/jt-zhang/SageAttention3 "$repo_dir"
         cd "$repo_dir" || exit 1
-        pip install .
+        python setup.py install
     else
-        echo "SageAttention2 already installed, skipping."
+        echo "SageAttention3 already installed, skipping."
     fi
 }
 
