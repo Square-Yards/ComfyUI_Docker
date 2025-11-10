@@ -19,56 +19,29 @@ NODES=(
     "https://github.com/Aryan185/ComfyUI-ExternalAPI-Helpers.git"
     "https://github.com/kijai/ComfyUI-KJNodes"
     "https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git"
-    "https://github.com/Gourieff/ComfyUI-ReActor.git"
     "https://github.com/crystian/ComfyUI-Crystools"
+    "https://github.com/ClownsharkBatwing/RES4LYF.git"
     "https://github.com/city96/ComfyUI-GGUF.git"
-    "https://github.com/ChenDarYen/ComfyUI-NAG.git"
-    "https://github.com/Extraltodeus/ComfyUI-AutomaticCFG.git"
-    "https://github.com/shiimizu/ComfyUI-TiledDiffusion.git"
     "https://github.com/ltdrdata/ComfyUI-Impact-Pack.git"
 )
 
-CHECKPOINT_MODELS=(
-    "https://civitai.com/api/download/models/274039?type=Model&format=SafeTensor&size=pruned&fp=fp16"
-)
-
 UNET_MODELS=(
-    "https://huggingface.co/black-forest-labs/FLUX.1-Kontext-dev/resolve/main/flux1-kontext-dev.safetensors"
-    "https://huggingface.co/QuantStack/Wan2.2-I2V-A14B-GGUF/resolve/main/HighNoise/Wan2.2-I2V-A14B-HighNoise-Q8_0.gguf"
-    "https://huggingface.co/QuantStack/Wan2.2-I2V-A14B-GGUF/resolve/main/LowNoise/Wan2.2-I2V-A14B-LowNoise-Q8_0.gguf"
+    "https://huggingface.co/QuantStack/Wan2.1_14B_VACE-GGUF/resolve/main/Wan2.1_14B_VACE-Q8_0.gguf"
 )
 
 LORA_MODELS=(
     "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Lightx2v/lightx2v_I2V_14B_480p_cfg_step_distill_rank128_bf16.safetensors"
     "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/FastWan/FastWan_T2V_14B_480p_lora_rank_128_bf16.safetensors"
-    "https://civitai.com/api/download/models/87153?type=Model&format=SafeTensor"
-    "https://civitai.com/api/download/models/236130?type=Model&format=SafeTensor"
-    "https://civitai.com/api/download/models/1026423?type=Model&format=SafeTensor"
 )
 
 VAE_MODELS=(
     "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Wan2_1_VAE_bf16.safetensors"
-    "https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/main/ae.safetensors"
 )
 
-ESRGAN_MODELS=(
-    "https://huggingface.co/ai-forever/Real-ESRGAN/resolve/main/RealESRGAN_x2.pth"
-)
-
-CONTROLNET_MODELS=(
-    "https://huggingface.co/comfyanonymous/ControlNet-v1-1_fp16_safetensors/resolve/main/control_v11f1e_sd15_tile_fp16.safetensors"
-)
 
 CLIP_MODELS=(
-    "https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/clip_l.safetensors"
-    "https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/t5xxl_fp16.safetensors"
-    "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/umt5-xxl-enc-bf16.safetensors"
+    "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors"
 )
-
-INSIGHTFACE_MODELS=(
-    "https://huggingface.co/datasets/Gourieff/ReActor/resolve/main/models/inswapper_128.onnx"
-)
-
 
 
 function provisioning_start() {
@@ -95,14 +68,10 @@ function provisioning_get_pip_packages() {
 
 function provisioning_download_models() {
 	echo "--- Starting model downloads in the background ---\n"
-    provisioning_get_models "${COMFYUI_DIR}/models/checkpoints" "${CHECKPOINT_MODELS[@]}"
     provisioning_get_models "${COMFYUI_DIR}/models/unet" "${UNET_MODELS[@]}"
     provisioning_get_models "${COMFYUI_DIR}/models/loras" "${LORA_MODELS[@]}"
-    provisioning_get_models "${COMFYUI_DIR}/models/controlnet" "${CONTROLNET_MODELS[@]}"
     provisioning_get_models "${COMFYUI_DIR}/models/vae" "${VAE_MODELS[@]}"
-    provisioning_get_models "${COMFYUI_DIR}/models/upscale_models" "${ESRGAN_MODELS[@]}"
     provisioning_get_models "${COMFYUI_DIR}/models/clip" "${CLIP_MODELS[@]}"
-    provisioning_get_models "${COMFYUI_DIR}/models/insightface" "${INSIGHTFACE_MODELS[@]}"
 }
 
 function provisioning_update_comfyui() {
