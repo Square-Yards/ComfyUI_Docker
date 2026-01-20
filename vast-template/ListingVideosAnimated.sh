@@ -31,9 +31,9 @@ NODES=(
 DIFFUSION_MODELS=(
     "https://huggingface.co/Kijai/WanVideo_comfy_fp8_scaled/resolve/main/InfiniteTalk/Wan2_1-InfiniteTalk-Multi_fp8_e4m3fn_scaled_KJ.safetensors"
     "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Wan2_1-I2V-14B-720P_fp8_e4m3fn.safetensors"
-    "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors"
-    "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors"
     "https://huggingface.co/theunlikely/Qwen-Image-Edit-2509/resolve/main/qwen_image_edit_2509_fp8_e4m3fn.safetensors"
+    "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_fun_camera_high_noise_14B_fp8_scaled.safetensors"
+    "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_fun_camera_low_noise_14B_fp8_scaled.safetensors"
 
 )
 
@@ -181,16 +181,13 @@ function provisioning_install_sageattention3() {
 
 function provisioning_install_custom_code() {
     cd /root/
-	python3 -m venv vast
-	./vast/bin/pip install vastai
 	git clone https://$GITHUB_API_TOKEN@github.com/Square-Yards/ListingVideos-LS.git
 	cd ListingVideos-LS
     git checkout Animated
     provisioning_install_rife
     python3 -m venv venv
     ./venv/bin/pip install -r requirements.txt
-	echo -e "GOOGLE_API_KEY=${GOOGLE_API_KEY}\nGOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}\nIP=$PUBLIC_IPADDR\nCOMFY_ENDPOINT=$PUBLIC_IPADDR:$VAST_TCP_PORT_8188" > .env	
-	echo -e $VAST_CONTAINERLABEL > id.txt
+    echo -e "GOOGLE_API_KEY=${GOOGLE_API_KEY}\nGOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}\nCOMFY_ENDPOINT_1=127.0.0.1:8188\nCOMFY_ENDPOINT_2=127.0.0.1:5000" > .env
     mv /root/params.json .
 }
 
