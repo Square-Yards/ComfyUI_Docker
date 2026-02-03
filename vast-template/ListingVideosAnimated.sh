@@ -7,7 +7,6 @@ COMFYUI_DIR=${WORKSPACE}/ComfyUI
 APT_PACKAGES=(
     "ffmpeg"
 	"libgl1"
-    "libvulkan1"
 )
 
 PIP_PACKAGES=(
@@ -32,8 +31,8 @@ DIFFUSION_MODELS=(
     "https://huggingface.co/Kijai/WanVideo_comfy_fp8_scaled/resolve/main/InfiniteTalk/Wan2_1-InfiniteTalk-Multi_fp8_e4m3fn_scaled_KJ.safetensors"
     "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Wan2_1-I2V-14B-720P_fp8_e4m3fn.safetensors"
     "https://huggingface.co/black-forest-labs/FLUX.2-klein-4b-fp8/resolve/main/flux-2-klein-4b-fp8.safetensors"
-    "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_fun_camera_high_noise_14B_fp8_scaled.safetensors"
-    "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_fun_camera_low_noise_14B_fp8_scaled.safetensors"
+    "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors"
+    "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors"
 
 )
 
@@ -43,6 +42,7 @@ LORA_MODELS=(
     "https://civitai.com/api/download/models/2159983?type=Model&format=SafeTensor"
     "https://civitai.com/api/download/models/87153?type=Model&format=SafeTensor"
     "https://civitai.com/api/download/models/236130?type=Model&format=SafeTensor"
+	"https://civitai.com/api/download/models/2119510?type=Model&format=SafeTensor"
 )
 
 VAE_MODELS=(
@@ -113,16 +113,6 @@ function provisioning_download_models() {
 }
 
 
-function provisioning_install_rife() {
-    wget -q https://github.com/nihui/rife-ncnn-vulkan/releases/download/20221029/rife-ncnn-vulkan-20221029-ubuntu.zip
-    unzip -q rife-ncnn-vulkan-20221029-ubuntu.zip
-    mv rife-ncnn-vulkan-20221029-ubuntu/rife-ncnn-vulkan /usr/local/bin/
-    chmod +x /usr/local/bin/rife-ncnn-vulkan
-    mv rife-ncnn-vulkan-20221029-ubuntu/rife-v4.6 .
-    rm -rf rife-ncnn-vulkan-20221029-ubuntu*
-}
-
-
 function provisioning_start_comfy_5000() {
     cat <<EOF > /etc/supervisor/conf.d/comfyui-5000.conf
 [program:comfyui-5000]
@@ -183,7 +173,6 @@ function provisioning_install_custom_code() {
 	git clone https://$GITHUB_API_TOKEN@github.com/Square-Yards/ListingVideos-LS.git
 	cd ListingVideos-LS
     git checkout Animated
-    provisioning_install_rife
     python3 -m venv venv
     ./venv/bin/pip install -r requirements.txt
     echo -e "GOOGLE_API_KEY=${GOOGLE_API_KEY}\nGOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}\nCOMFY_ENDPOINT_1=127.0.0.1:8188\nCOMFY_ENDPOINT_2=127.0.0.1:5000" > .env
