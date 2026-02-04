@@ -25,6 +25,7 @@ NODES=(
     "https://github.com/ClownsharkBatwing/RES4LYF.git"
 	"https://github.com/ltdrdata/was-node-suite-comfyui.git"
     "https://github.com/cubiq/ComfyUI_essentials.git"
+	"https://github.com/Aryan185/ComfyUI-VertexAPI.git"
 )
 
 DIFFUSION_MODELS=(
