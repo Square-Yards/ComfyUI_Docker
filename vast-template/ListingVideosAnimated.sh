@@ -102,7 +102,7 @@ function provisioning_get_pip_packages() {
 
 function provisioning_download_models() {
 	echo "--- Starting model downloads in the background ---\n"
-    provisioning_get_models "${COMFYUI_DIR}/models/diffusion_models" "${DIFFUSION_MODELS[@]}" &
+    provisioning_get_models "${COMFYUI_DIR}/models/diffusion_models" "${DIFFUSION_MODELS[@]}"
     provisioning_get_models "${COMFYUI_DIR}/models/loras" "${LORA_MODELS[@]}" &
     provisioning_get_models "${COMFYUI_DIR}/models/vae" "${VAE_MODELS[@]}" &
     provisioning_get_models "${COMFYUI_DIR}/models/clip" "${CLIP_MODELS[@]}" &
