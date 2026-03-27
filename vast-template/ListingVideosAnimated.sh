@@ -20,9 +20,6 @@ NODES=(
     "https://github.com/kijai/ComfyUI-KJNodes"
     "https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git"
     "https://github.com/crystian/ComfyUI-Crystools"
-    "https://github.com/Extraltodeus/ComfyUI-AutomaticCFG.git"
-    "https://github.com/shiimizu/ComfyUI-TiledDiffusion.git"
-    "https://github.com/ClownsharkBatwing/RES4LYF.git"
 	"https://github.com/ltdrdata/was-node-suite-comfyui.git"
     "https://github.com/cubiq/ComfyUI_essentials.git"
 	"https://github.com/Aryan185/ComfyUI-VertexAPI.git"
@@ -32,44 +29,33 @@ DIFFUSION_MODELS=(
     "https://huggingface.co/Kijai/WanVideo_comfy_fp8_scaled/resolve/main/InfiniteTalk/Wan2_1-InfiniteTalk-Multi_fp8_e4m3fn_scaled_KJ.safetensors"
     "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Wan2_1-I2V-14B-720P_fp8_e4m3fn.safetensors"
     "https://huggingface.co/black-forest-labs/FLUX.2-klein-4b-fp8/resolve/main/flux-2-klein-4b-fp8.safetensors"
-    "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors"
-    "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors"
+	"https://huggingface.co/Kijai/LTX2.3_comfy/resolve/main/diffusion_models/ltx-2.3-22b-distilled_transformer_only_fp8_input_scaled_v3.safetensors"
 
 )
 
 LORA_MODELS=(
     "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Lightx2v/lightx2v_I2V_14B_480p_cfg_step_distill_rank128_bf16.safetensors"
-    "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/FastWan/FastWan_T2V_14B_480p_lora_rank_128_bf16.safetensors"
-    "https://civitai.com/api/download/models/2159983?type=Model&format=SafeTensor"
-    "https://civitai.com/api/download/models/87153?type=Model&format=SafeTensor"
-    "https://civitai.com/api/download/models/236130?type=Model&format=SafeTensor"
-	"https://civitai.com/api/download/models/2119510?type=Model&format=SafeTensor"
+	"https://huggingface.co/squareyards/LTX-2.3-camera-lora/resolve/main/ltx-2.3-22b-lora-camera-arcshot.safetensors"
+	"https://huggingface.co/squareyards/LTX-2.3-camera-lora/resolve/main/ltx-2.3-22b-lora-camera-kenburn.safetensors"
+	"https://huggingface.co/Lightricks/LTX-2-19b-LoRA-Camera-Control-Dolly-In/resolve/main/ltx-2-19b-lora-camera-control-dolly-in.safetensors"
 )
 
 VAE_MODELS=(
     "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Wan2_1_VAE_bf16.safetensors"
     "https://huggingface.co/Comfy-Org/flux2-dev/resolve/main/split_files/vae/flux2-vae.safetensors"
+	"https://huggingface.co/Kijai/LTX2.3_comfy/resolve/main/vae/LTX23_audio_vae_bf16.safetensors"
+	"https://huggingface.co/Kijai/LTX2.3_comfy/resolve/main/vae/LTX23_video_vae_bf16.safetensors"
 )
 
 CLIP_MODELS=(
     "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors"
     "https://huggingface.co/Comfy-Org/z_image_turbo/resolve/main/split_files/text_encoders/qwen_3_4b.safetensors"
+	"https://huggingface.co/GitMylo/LTX-2-comfy_gemma_fp8_e4m3fn/resolve/main/gemma_3_12B_it_fp8_e4m3fn.safetensors"
+	"https://huggingface.co/Kijai/LTX2.3_comfy/resolve/main/text_encoders/ltx-2.3_text_projection_bf16.safetensors"
 )
 
 CLIP_VISION=(
 	"https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/clip_vision/clip_vision_h.safetensors"
-)
-
-ESRGAN_MODELS=(
-    "https://huggingface.co/ai-forever/Real-ESRGAN/resolve/main/RealESRGAN_x2.pth"
-)
-
-CONTROLNET_MODELS=(
-    "https://huggingface.co/comfyanonymous/ControlNet-v1-1_fp16_safetensors/resolve/main/control_v11f1e_sd15_tile_fp16.safetensors"
-)
-
-CHECKPOINT_MODELS=(
-    "https://civitai.com/api/download/models/274039?type=Model&format=SafeTensor&size=pruned&fp=fp16"
 )
 
 function provisioning_start() {
@@ -103,13 +89,10 @@ function provisioning_get_pip_packages() {
 function provisioning_download_models() {
 	echo "--- Starting model downloads in the background ---\n"
     provisioning_get_models "${COMFYUI_DIR}/models/diffusion_models" "${DIFFUSION_MODELS[@]}"
-    provisioning_get_models "${COMFYUI_DIR}/models/loras" "${LORA_MODELS[@]}" &
-    provisioning_get_models "${COMFYUI_DIR}/models/vae" "${VAE_MODELS[@]}" &
-    provisioning_get_models "${COMFYUI_DIR}/models/clip" "${CLIP_MODELS[@]}" &
-    provisioning_get_models "${COMFYUI_DIR}/models/clip_vision" "${CLIP_VISION[@]}" &
-    provisioning_get_models "${COMFYUI_DIR}/models/controlnet" "${CONTROLNET_MODELS[@]}" &
-    provisioning_get_models "${COMFYUI_DIR}/models/checkpoints" "${CHECKPOINT_MODELS[@]}" &
-    provisioning_get_models "${COMFYUI_DIR}/models/upscale_models" "${ESRGAN_MODELS[@]}" &
+    provisioning_get_models "${COMFYUI_DIR}/models/loras" "${LORA_MODELS[@]}"
+    provisioning_get_models "${COMFYUI_DIR}/models/vae" "${VAE_MODELS[@]}"
+    provisioning_get_models "${COMFYUI_DIR}/models/clip" "${CLIP_MODELS[@]}"
+    provisioning_get_models "${COMFYUI_DIR}/models/clip_vision" "${CLIP_VISION[@]}"
 }
 
 
