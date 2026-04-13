@@ -65,10 +65,10 @@ function provisioning_start() {
     provisioning_update_comfyui
     provisioning_download_models &
     provisioning_setup_dependencies &
-    provisioning_setup_vibevoice &
-    provisioning_setup_projectvideos &
     provisioning_start_comfy_5000 &
-    provisioning_start_comfy_5001
+    provisioning_start_comfy_5001 &
+    provisioning_setup_vibevoice
+    provisioning_setup_projectvideos
     provisioning_supervisor_vibevoice
     wait
     supervisorctl reload
