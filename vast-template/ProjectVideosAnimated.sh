@@ -189,7 +189,7 @@ function provisioning_setup_projectvideos() {
     conda run -n proj pip install -r requirements.txt
     
     # Setup .env
-    echo -e "GOOGLE_API_KEY=${GOOGLE_API_KEY}\nGOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}\nCOMFY_ENDPOINT_1=127.0.0.1:8188\nCOMFY_ENDPOINT_2=127.0.0.1:5000\nCOMFY_ENDPOINT_3=127.0.0.1:5001\nADOBE_ENDPOINT=${ADOBE_ENDPOINT}" > .env
+    echo -e "GOOGLE_API_KEY=${GOOGLE_API_KEY}\nGOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}\nCOMFY_ENDPOINT_1=127.0.0.1:8188\nCOMFY_ENDPOINT_2=127.0.0.1:5000\nCOMFY_ENDPOINT_3=127.0.0.1:5001\nADOBE_ENDPOINT=${ADOBE_ENDPOINT}\nVIBETTS_ENDPOINT=127.0.0.1:8000" > .env
 }
 
 function provisioning_supervisor_vibevoice() {
@@ -198,7 +198,7 @@ while [ -f "/.provisioning" ]; do
     sleep 5
 done
 cd /root/VibeVoiceTTS
-conda run -n vibe python app.py
+/venv/vibe/bin/python app.py
 ' > /opt/supervisor-scripts/vibevoice.sh
     chmod +x /opt/supervisor-scripts/vibevoice.sh
 
@@ -217,7 +217,7 @@ while [ -f "/.provisioning" ]; do
     sleep 5
 done
 cd /root/ProjectVideos-Adobe
-conda run -n proj python main.py
+/venv/proj/bin/python main.py
 ' > /opt/supervisor-scripts/projectvideos.sh
     chmod +x /opt/supervisor-scripts/projectvideos.sh
 
