@@ -171,7 +171,7 @@ function provisioning_setup_vibevoice() {
     cd /root/
     git clone https://$GITHUB_API_TOKEN@github.com/Square-Yards/VibeVoiceTTS.git
     cd VibeVoiceTTS
-    git clone https://huggingface.co/vibevoice/VibeVoice-7B
+    /venv/main/bin/huggingface-cli download vibevoice/VibeVoice-7B --local-dir VibeVoice-7B --local-dir-use-symlinks False
     conda create -n vibe python=3.11 -y
     conda run -n vibe pip install -r requirements.txt
 }
